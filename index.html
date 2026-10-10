@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-font="mono">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MORSELAB — Morse Translator, Learn, Practice</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="logo" id="logoBtn">◉ MORSELAB</button>
+  <nav class="mainnav" id="mainNav">
+    <button data-page="translator" class="active">Translator</button>
+    <button data-page="learn">Learn</button>
+    <button data-page="practice">Practice</button>
+    <button data-page="achievements">Achievements</button>
+    <button data-page="stats">Stats</button>
+    <button data-page="speed">Speed</button>
+    <button data-page="radio">Radio</button>
+    <button data-page="audio">Audio</button>
+    <button data-page="flash">Flash</button>
+    <button data-page="keyboard">Keyboard</button>
+    <button data-page="dictionary">Dictionary</button>
+    <button data-page="signals">Signals</button>
+    <button data-page="puzzles">Puzzles</button>
+    <button data-page="secret">Secret</button>
+    <button data-page="lab">Lab</button>
+    <button data-page="history">History</button>
+  </nav>
+  <button id="settingsBtn" class="icon-btn" title="Settings">⚙</button>
+</header>
+
+<main id="main">
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<section class="page" id="page-home" hidden>
+  <div class="dash-hero">
+    <h1>MORSELAB</h1>
+    <p>Learn • Translate • Transmit</p>
+  </div>
+  <div class="dash-grid">
+    <button class="dash-card wide" data-page="translator">
+      <span class="dash-ico">🔤</span>
+      <b>TRANSLATOR</b>
+      <i>Convert Morse instantly</i>
+    </button>
+    <button class="dash-card" data-page="learn"><span class="dash-ico">🎓</span><b>LEARN</b><i>Start Morse</i></button>
+    <button class="dash-card" data-page="practice"><span class="dash-ico">🧠</span><b>PRACTICE</b><i>Test yourself</i></button>
+    <button class="dash-card" data-page="achievements"><span class="dash-ico">🏆</span><b>ACHIEVEMENTS</b><i>Earn badges</i></button>
+    <button class="dash-card" data-page="stats"><span class="dash-ico">📊</span><b>STATS</b><i>See progress</i></button>
+    <button class="dash-card" data-page="audio"><span class="dash-ico">🔊</span><b>AUDIO</b><i>Send beeps</i></button>
+    <button class="dash-card" data-page="flash"><span class="dash-ico">💡</span><b>FLASH</b><i>Send signals</i></button>
+    <button class="dash-card" data-page="speed"><span class="dash-ico">⚡</span><b>SPEED</b><i>Receive at WPM</i></button>
+    <button class="dash-card" data-page="radio"><span class="dash-ico">📻</span><b>RADIO</b><i>Copy the airwaves</i></button>
+    <button class="dash-card" data-page="dictionary"><span class="dash-ico">📚</span><b>DICTIONARY</b><i>Look anything up</i></button>
+    <button class="dash-card" data-page="signals"><span class="dash-ico">📡</span><b>SIGNALS</b><i>Prosigns explained</i></button>
+    <button class="dash-card" data-page="puzzles"><span class="dash-ico">🧩</span><b>PUZZLES</b><i>Solve code breaks</i></button>
+    <button class="dash-card" data-page="secret"><span class="dash-ico">🕵️</span><b>SECRET</b><i>Encode hidden notes</i></button>
+    <button class="dash-card" data-page="lab"><span class="dash-ico">🧪</span><b>LAB</b><i>Ciphers &amp; tools</i></button>
+    <button class="dash-card" data-page="history"><span class="dash-ico">📜</span><b>HISTORY</b><i>Two centuries of code</i></button>
+  </div>
+  <div class="dash-progress card">
+    <h2>YOUR PROGRESS</h2>
+    <div class="prog-row">
+      <div class="prog-ring"><span id="dashPct">0%</span><small>learned</small></div>
+      <div class="prog-stats">
+        <div><b id="dashWpm">15</b> WPM</div>
+        <div>🔥 <b id="dashStreak">0</b> day streak</div>
+        <div><b id="dashLetters">0/26</b> letters</div>
+        <div><b id="dashBest">0</b> best score</div>
+        <div>🏆 <b id="dashBadges">0</b> badges</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TRANSLATOR ══════════ -->
+<section class="page" id="page-translator">
+  <div class="mode-row">
+    <div class="seg" id="modeSeg">
+      <button data-mode="auto" class="active">AUTO</button>
+      <button data-mode="t2m">TEXT → MORSE</button>
+      <button data-mode="m2t">MORSE → TEXT</button>
+    </div>
+    <span class="detect-badge" id="detectBadge" hidden>detected: <b></b></span>
+  </div>
+
+  <label class="field-label" for="textInput">TEXT</label>
+  <textarea id="textInput" class="io-box" rows="3"
+    placeholder="Type text — e.g. HELLO WORLD" spellcheck="false"></textarea>
+
+  <div class="swap-row"><button id="swapBtn" class="ghost-btn" title="Swap directions">⇅ SWAP</button></div>
+
+  <label class="field-label" for="morseInput">MORSE</label>
+  <textarea id="morseInput" class="io-box morse-box" rows="3"
+    placeholder="Type Morse — e.g. .... . .-.. .-.. --- / .-- --- .-. .-.. -.." spellcheck="false"></textarea>
+  <div class="validation" id="validation" hidden></div>
+
+  <div class="btn-grid" id="mainButtons">
+    <button data-act="copy">COPY</button>
+    <button data-act="paste">PASTE</button>
+    <button data-act="clear">CLEAR</button>
+    <button data-act="undo" id="undoBtn">UNDO</button>
+    <button data-act="redo" id="redoBtn">REDO</button>
+    <button data-act="share">SHARE</button>
+    <button data-act="download">DOWNLOAD</button>
+  </div>
+
+  <div class="transport">
+    <button id="playBtn" class="big-btn play">▶ PLAY MORSE</button>
+    <button id="audioStopBtn" class="icon-btn big" title="Stop">■</button>
+    <label class="toggle"><input type="checkbox" id="loopToggle"><span>LOOP</span></label>
+    <label class="toggle"><input type="checkbox" id="farnsworthToggle"><span>Farnsworth</span></label>
+  </div>
+  <div class="sliders">
+    <label>WPM <output id="wpmOut">15</output>
+      <input type="range" id="wpmSlider" min="5" max="40" value="15"></label>
+    <label>Tone <output id="toneOut">600 Hz</output>
+      <input type="range" id="toneSlider" min="300" max="1200" step="10" value="600"></label>
+    <label>Volume <output id="volOut">70%</output>
+      <input type="range" id="volSlider" min="0" max="100" value="70"></label>
+  </div>
+
+  <section class="card sub">
+    <h2>⌨ MORSE KEYPAD</h2>
+    <div class="morse-keypad" id="keypad">
+      <button data-key=".">· dot</button>
+      <button data-key="-">− dash</button>
+      <button data-key=" ">SPACE</button>
+      <button data-key="/">/ word</button>
+      <button data-key="\b">⌫ BACKSPACE</button>
+      <button data-key="clear">CLEAR</button>
+    </div>
+    <div class="quick-msgs" id="quickMsgs">
+      <span class="quick-label">quick:</span>
+      <button data-msg="SOS">SOS</button>
+      <button data-msg="OK">OK</button>
+      <button data-msg="YES">YES</button>
+      <button data-msg="NO">NO</button>
+      <button data-msg="HELP">HELP</button>
+      <button data-msg="CQ">CQ</button>
+      <button data-msg="ATTENTION">ATTENTION</button>
+    </div>
+    <div class="keys" id="keys"></div>
+  </section>
+</section>
+
+<!-- ══════════ LEARN ══════════ -->
+<section class="page" id="page-learn">
+  <div class="card sub" id="learnIntro">
+    <h2>📖 WHAT IS MORSE CODE?</h2>
+    <p class="edu">Morse code turns letters, numbers and punctuation into patterns of short
+    (<b>· dot</b>) and long (<b>− dash</b>) signals. Each character has its own unique pattern —
+    <b>E</b> is a single dot, <b>T</b> is a single dash. Everything else is built from those two
+    units. In audio, a dot lasts one unit of time, a dash three; gaps separate them.</p>
+    <div class="learn-charts">
+      <div>
+        <h3>LETTERS</h3>
+        <div class="chart" id="chartLetters"></div>
+      </div>
+      <div>
+        <h3>NUMBERS</h3>
+        <div class="chart" id="chartDigits"></div>
+      </div>
+      <div>
+        <h3>PUNCTUATION</h3>
+        <div class="chart" id="chartPunct"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card sub">
+    <h2>🎓 LESSONS</h2>
+    <p class="hint">Each lesson adds two characters. Pass a quiz (5 in a row) to unlock the next.</p>
+    <div class="lessons" id="lessonsGrid"></div>
+    <div class="lesson-quiz" id="lessonQuiz" hidden>
+      <div class="quiz-head">
+        <b id="quizTitle"></b>
+        <span id="quizProgress"></span>
+        <button id="quizReplay" class="ghost-btn">🔊 REPLAY</button>
+        <button id="quizClose" class="ghost-btn">✕</button>
+      </div>
+      <div class="learn-prompt" id="quizPrompt"></div>
+      <div class="learn-choices" id="quizChoices"></div>
+      <div class="learn-feedback" id="quizFeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRACTICE ══════════ -->
+<section class="page" id="page-practice">
+  <div class="card sub">
+    <h2>🧠 PRACTICE</h2>
+    <div class="seg" id="modeSeg2">
+      <button data-pmode="hear" class="active">🔊 HEAR → TYPE</button>
+      <button data-pmode="see">👀 SEE → TYPE</button>
+      <button data-pmode="t2m">🔤 TEXT → MORSE</button>
+      <button data-pmode="rand">🎲 RANDOM</button>
+    </div>
+    <div class="seg" id="diffSeg">
+      <button data-diff="easy" class="active">EASY</button>
+      <button data-diff="medium">MEDIUM</button>
+      <button data-diff="hard">HARD</button>
+    </div>
+
+    <div class="hud" id="hud">
+      <div><b id="hScore">0</b>score</div>
+      <div><b id="hAcc">100%</b>accuracy</div>
+      <div><b id="hStreak">0</b>streak</div>
+      <div><b id="hTimer">0:00</b>time</div>
+      <div><b id="hBest">0</b>personal best</div>
+    </div>
+
+    <div class="learn-area" id="pracArea">
+      <div class="learn-prompt" id="pracPrompt">Press START to play</div>
+      <div class="learn-typed" id="pracTyped">
+        <input type="text" id="pracInput" placeholder="your answer…" spellcheck="false" autocomplete="off">
+        <button id="pracSubmit" class="ghost-btn">CHECK</button>
+      </div>
+      <div class="transport" id="pracTransport">
+        <button id="pracReplay" class="ghost-btn">🔊 REPLAY</button>
+        <button id="pracStart" class="big-btn">START</button>
+      </div>
+      <div class="learn-feedback" id="pracFeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ACHIEVEMENTS ══════════ -->
+<section class="page" id="page-achievements" hidden>
+  <div class="card sub">
+    <h2>🏆 ACHIEVEMENTS</h2>
+    <p class="hint">Earn badges by using MORSELAB — complete lessons, play rounds, copy the airwaves.</p>
+    <div class="achievement-bar">
+      <div class="ach-meta"><b id="achCount">0 / 14</b><output id="achPct">0%</output></div>
+      <div class="bar"><span class="bar-fill" id="achBar" style="width:0%"></span></div>
+    </div>
+    <div class="badge-grid" id="achGrid"></div>
+  </div>
+</section>
+
+<!-- ══════════ STATS ══════════ -->
+<section class="page" id="page-stats" hidden>
+  <div class="card sub">
+    <h2>📊 LEARNING STATISTICS</h2>
+    <p class="hint">Your totals, accuracy by mode, weakest characters and recent practice scores.</p>
+    <div class="stat-summary">
+      <div><b id="stCorrect">0</b>correct</div>
+      <div><b id="stWrong">0</b>wrong</div>
+      <div><b id="stAcc">—</b>accuracy</div>
+      <div><b id="stRounds">0</b>rounds</div>
+      <div><b id="stLessons">0</b>lessons</div>
+      <div><b id="stLetters">0/26</b>letters</div>
+      <div><b id="stBest">0</b>best score</div>
+      <div><b id="stSpeed">0</b>best WPM</div>
+    </div>
+
+    <h3 class="set-group">Accuracy by mode</h3>
+    <div id="stModes"></div>
+    <p class="hint" id="stNoModes">No practice rounds played yet.</p>
+
+    <h3 class="set-group">Weakest characters</h3>
+    <ul class="stat-weak" id="stWeak"></ul>
+
+    <h3 class="set-group">Recent practice scores</h3>
+    <ul class="spark" id="stSpark"></ul>
+  </div>
+</section>
+
+<!-- ══════════ SPEED ══════════ -->
+<section class="page" id="page-speed">
+  <div class="card sub">
+    <h2>⚡ MORSE SPEED TRAINER</h2>
+    <p class="hint">Pick a speed, hit play, copy what you hear. Accuracy is tracked per speed.</p>
+    <div class="speed-btns" id="speedBtns">
+      <button data-wpm="5">5 WPM</button><button data-wpm="10">10 WPM</button>
+      <button data-wpm="15" class="active">15 WPM</button><button data-wpm="20">20 WPM</button>
+      <button data-wpm="25">25 WPM</button><button data-wpm="30">30 WPM</button>
+      <button data-wpm="40">40 WPM</button>
+    </div>
+    <div class="hud">
+      <div><b id="spCurrent">15</b>current WPM</div>
+      <div><b id="spAcc">—</b>accuracy</div>
+      <div><b id="spBest">0</b>best WPM</div>
+      <div><b id="spRounds">0</b>rounds</div>
+    </div>
+    <div class="learn-area">
+      <div class="transport">
+        <button id="spPlay" class="big-btn play">▶ PLAY RANDOM GROUP</button>
+        <button id="spReplay" class="ghost-btn">🔊 REPLAY</button>
+      </div>
+      <div class="learn-typed">
+        <input type="text" id="spInput" placeholder="type what you hear…" spellcheck="false" autocomplete="off">
+        <button id="spSubmit" class="ghost-btn">CHECK</button>
+      </div>
+      <div class="learn-feedback" id="spFeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ RADIO ══════════ -->
+<section class="page" id="page-radio" hidden>
+  <div class="card sub">
+    <h2>📻 RADIO SIMULATOR</h2>
+    <p class="hint">Tune a random station, copy the transmission, and check your copy like a real operator.</p>
+    <div class="radio-panel">
+      <div class="r-top">
+        <span class="r-state" id="rState">RCVR TUNED OFF</span>
+        <span class="r-freq" id="rFreq">— MHz</span>
+      </div>
+      <div class="r-meter" id="rMeter"></div>
+      <div class="r-recv" id="rRcv"></div>
+      <div class="r-copy"><b id="rCopyTxt">copies: 0 / 0</b></div>
+    </div>
+    <div class="transport">
+      <button id="rCall" class="big-btn">📡 CALL / TUNE</button>
+      <button id="rAgain" class="ghost-btn">↻ REPLAY</button>
+      <label class="toggle">WPM
+        <select id="rWpm">
+          <option value="10">10</option>
+          <option value="15" selected>15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+        </select></label>
+    </div>
+    <div class="learn-typed">
+      <input type="text" id="rInput" placeholder="type what the station sent…" spellcheck="false" autocomplete="off">
+      <button id="rCheck" class="ghost-btn">CHECK COPY</button>
+    </div>
+    <div class="r-result" id="rResult" hidden>
+      <b>Transmission:</b> <span id="rAnswer"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ AUDIO ══════════ -->
+<section class="page" id="page-audio">
+  <div class="card sub">
+    <h2>🔊 MORSE TRANSMITTER</h2>
+    <textarea id="audioInput" class="io-box" rows="2" spellcheck="false"
+      placeholder="SOS WE NEED HELP">SOS WE NEED HELP</textarea>
+    <div class="transport">
+      <button id="audioPlayBtn" class="icon-btn big" title="Play / pause">▶</button>
+      <button id="audioStopBtn2" class="icon-btn big" title="Stop">■</button>
+      <label class="toggle"><input type="checkbox" id="audioLoop"><span>LOOP</span></label>
+      <label class="toggle"><input type="checkbox" id="audioFarns"><span>Farnsworth timing</span></label>
+      <label class="toggle">TONE
+        <select id="toneType"><option value="sine">Sine (classic)</option>
+        <option value="square">Square</option><option value="triangle">Triangle</option>
+        <option value="sawtooth">Sawtooth</option></select></label>
+    </div>
+    <div class="sliders">
+      <label>WPM <output id="aWpmOut">15</output>
+        <input type="range" id="aWpm" min="5" max="40" value="15"></label>
+      <label>Frequency <output id="aToneOut">600 Hz</output>
+        <input type="range" id="aTone" min="300" max="1200" step="10" value="600"></label>
+      <label>Volume <output id="aVolOut">70%</output>
+        <input type="range" id="aVol" min="0" max="100" value="70"></label>
+    </div>
+    <div class="tone-presets" id="tonePresets">
+      <button data-hz="400">low 400</button>
+      <button data-hz="600" class="active">classic 600</button>
+      <button data-hz="800">high 800</button>
+      <button data-hz="1000">sharp 1k</button>
+    </div>
+    <canvas id="viz" class="visualizer" width="900" height="90"></canvas>
+  </div>
+</section>
+
+<!-- ══════════ FLASH ══════════ -->
+<section class="page" id="page-flash">
+  <div class="card sub">
+    <h2>💡 VISUAL TRANSMITTER</h2>
+    <textarea id="flashInput" class="io-box" rows="2" spellcheck="false"
+      placeholder="HELLO">HELLO</textarea>
+    <div class="morse-preview" id="flashPreview"></div>
+    <div class="transport">
+      <button id="flashBtn" class="big-btn flash">💡 FLASH</button>
+      <button id="vibeBtn" class="big-btn vibe">📳 VIBRATE</button>
+      <button id="flashSosBtn" class="big-btn">SOS</button>
+    </div>
+    <div class="sliders">
+      <label>Speed <output id="fWpmOut">15</output>
+        <input type="range" id="fWpm" min="5" max="40" value="15"></label>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="flashGlyphOn" checked><span>Show symbol overlay</span></label>
+      <label class="toggle"><input type="checkbox" id="flashOnPlay"><span>Flash while playing audio</span></label>
+      <label class="toggle"><input type="checkbox" id="vibeOnPlay"><span>Vibrate while playing</span></label>
+    </div>
+    <p class="hint">Phone? The screen flash works everywhere; vibration follows the pattern
+    where the browser supports <code>navigator.vibrate</code>.</p>
+  </div>
+</section>
+
+<!-- ══════════ KEYBOARD ══════════ -->
+<section class="page" id="page-keyboard">
+  <div class="card sub">
+    <h2>⌨ MORSE KEYBOARD</h2>
+    <div class="kb-display">
+      <div class="kb-line morse-box" id="kbMorse">…</div>
+      <div class="kb-line" id="kbText"></div>
+    </div>
+    <div class="big-keypad">
+      <div class="bk-row">
+        <button class="bk sym" data-bk=".">·</button>
+        <button class="bk sym" data-bk="-">−</button>
+      </div>
+      <div class="bk-row">
+        <button class="bk space" data-bk=" ">SPACE</button>
+      </div>
+      <div class="bk-row">
+        <button class="bk" data-bk="\b">⌫</button>
+        <button class="bk" data-bk="/">/</button>
+        <button class="bk" data-bk="clear">CLEAR</button>
+      </div>
+    </div>
+    <div class="transport">
+      <button id="kbPlay" class="big-btn play">▶ PLAY</button>
+      <button id="kbToText" class="ghost-btn">MORSE → TEXT</button>
+      <button id="kbCopy" class="ghost-btn">COPY</button>
+      <button id="kbSend" class="ghost-btn">→ TRANSLATOR</button>
+    </div>
+    <p class="hint">Big buttons for touch screens. Each key you press shows up in Morse up top.</p>
+  </div>
+</section>
+
+<!-- ══════════ DICTIONARY ══════════ -->
+<section class="page" id="page-dictionary">
+  <div class="card sub">
+    <h2>📚 MORSE DICTIONARY</h2>
+    <input type="search" id="dictSearch" class="search-box"
+      placeholder="Search: SOS, A, 73, QRZ, ? …" spellcheck="false">
+    <div class="seg" id="dictFilter">
+      <button data-kind="all" class="active">ALL</button>
+      <button data-kind="letter">LETTERS</button>
+      <button data-kind="number">NUMBERS</button>
+      <button data-kind="punctuation">PUNCT</button>
+      <button data-kind="prosign">PROSIGNS</button>
+      <button data-kind="abbreviation">ABBREVS</button>
+    </div>
+    <div class="dict-list" id="dictList"></div>
+  </div>
+</section>
+
+<!-- ══════════ SIGNALS ══════════ -->
+<section class="page" id="page-signals">
+  <div class="card sub">
+    <h2>📡 SIGNALS &amp; PROSIGNS</h2>
+    <p class="hint">Standard abbreviations every operator knows. Click a card to hear it.</p>
+    <div class="signal-list" id="signalList"></div>
+  </div>
+</section>
+
+<!-- ══════════ PUZZLES ══════════ -->
+<section class="page" id="page-puzzles" hidden>
+  <div class="card sub">
+    <h2>🧩 MORSE PUZZLES</h2>
+    <p class="hint">Ten puzzles per round: read codes, listen, or build Morse by hand. Streak bonus up to +10.</p>
+    <div class="seg" data-pz>
+      <button data-diff="easy" class="active">EASY</button>
+      <button data-diff="medium">MEDIUM</button>
+      <button data-diff="hard">HARD</button>
+    </div>
+
+    <div id="pzStart">
+      <button id="pzStartBtn" class="big-btn">START PUZZLE ROUND</button>
+    </div>
+
+    <div id="pzGame" hidden>
+      <div class="hud" id="pzHud"></div>
+      <div class="learn-area">
+        <div class="learn-prompt" id="pzPrompt"></div>
+        <div class="learn-choices" id="pzChoices"></div>
+        <div class="learn-typed" id="pzTypeRow" hidden>
+          <input type="text" id="pzTypeIn" placeholder="type the Morse, e.g. .- -..." spellcheck="false" autocomplete="off">
+          <button id="pzGo" class="ghost-btn">CHECK</button>
+        </div>
+        <button id="pzHint" class="ghost-btn">🔊 PLAY IT</button>
+        <div class="learn-feedback" id="pzFb"></div>
+      </div>
+    </div>
+
+    <div id="pzResult" hidden>
+      <div class="pz-summary">
+        <div>Score <b id="pzResultScore">0</b></div>
+        <div>Accuracy <b id="pzResultPct">—</b></div>
+        <div>Best <b id="pzResultBest">0</b></div>
+      </div>
+      <button id="pzAgain" class="big-btn">PLAY AGAIN</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SECRET ══════════ -->
+<section class="page" id="page-secret" hidden>
+  <div class="card sub">
+    <h2>🕵️ SECRET MESSAGE MODE</h2>
+    <p class="hint">Cipher a message with a key, then send it as Morse. Anyone with the key can decode it.</p>
+    <div class="mode-row">
+      <label class="toggle">Cipher
+        <select id="secCipher">
+          <option value="vigenere">Vigenère</option>
+          <option value="caesar">Caesar</option>
+          <option value="railfence">Rail fence</option>
+          <option value="rot13">ROT13</option>
+        </select></label>
+      <label class="toggle">Key
+        <input type="text" id="secKey" placeholder="key/rails" value="KEY" spellcheck="false" size="10"></label>
+    </div>
+    <div class="seg" data-sec>
+      <button data-sec="encode" class="active">ENCODE</button>
+      <button data-sec="decode">DECODE</button>
+    </div>
+    <label class="field-label" for="secIn">MESSAGE</label>
+    <textarea id="secIn" class="io-box" rows="3"
+      placeholder="ATTACK AT DAWN" spellcheck="false"></textarea>
+    <div class="transport">
+      <button id="secGo" class="big-btn">RUN</button>
+      <button id="secPlay" class="ghost-btn">▶ PLAY MORSE</button>
+      <button id="secCopyTxt" class="ghost-btn">COPY TEXT</button>
+      <button id="secCopyMorse" class="ghost-btn">COPY MORSE</button>
+      <button id="secClear" class="ghost-btn">CLEAR</button>
+    </div>
+    <div class="secret-out">
+      <div><b>Secret text</b><pre class="lab-out" id="secOut"></pre></div>
+      <div><b>Morse of the secret</b><pre class="lab-out morse-box" id="secMorse"></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LAB ══════════ -->
+<section class="page" id="page-lab">
+  <div class="card sub">
+    <h2>🧪 MORSE LAB</h2>
+    <div class="seg" id="labSeg">
+      <button data-lab="encode" class="active">ENCODE</button>
+      <button data-lab="binary">BINARY ↔ MORSE</button>
+      <button data-lab="ascii">ASCII ↔ MORSE</button>
+      <button data-lab="caesar">CAESAR → MORSE</button>
+      <button data-lab="b64">MORSE → BASE64</button>
+      <button data-lab="reverse">REVERSE</button>
+      <button data-lab="custom">CUSTOM ALPHABET</button>
+      <button data-lab="random">RANDOM MESSAGE</button>
+    </div>
+    <p class="hint" id="labHint"></p>
+    <textarea id="labInput" class="io-box" rows="2" spellcheck="false" placeholder="input…"></textarea>
+    <div class="lab-extra" id="labExtra"></div>
+    <div class="lab-out" id="labOutput"></div>
+    <div class="transport">
+      <button id="labRun" class="big-btn">RUN</button>
+      <button id="labCopy" class="ghost-btn">COPY</button>
+      <button id="labPlay" class="ghost-btn">▶ PLAY</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ HISTORY ══════════ -->
+<section class="page" id="page-history">
+  <div class="card sub">
+    <h2>📜 HISTORY OF MORSE CODE</h2>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ SETTINGS MODAL ══════════ -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2>⚙ SETTINGS</h2><button id="settingsClose" class="icon-btn">✕</button></div>
+
+    <h3 class="set-group">Appearance</h3>
+    <div class="settings-grid">
+      <label>Theme
+        <select id="setTheme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="crt">CRT green</option>
+          <option value="terminal">Terminal</option>
+          <option value="cyberpunk">Cyberpunk</option>
+          <option value="contrast">High contrast</option>
+        </select></label>
+      <label>Font
+        <select id="setFont">
+          <option value="mono">Monospace</option>
+          <option value="sans">Sans-serif</option>
+          <option value="serif">Serif</option>
+        </select></label>
+      <label>Large text
+        <select id="setLarge"><option value="0">Off</option><option value="1">On</option></select></label>
+      <label>Reduced motion
+        <select id="setReduced"><option value="0">Off</option><option value="1">On</option></select></label>
+    </div>
+
+    <h3 class="set-group">Translator</h3>
+    <div class="settings-grid">
+      <label>Auto-detect
+        <select id="setAutodetect"><option value="1">On</option><option value="0">Off</option></select></label>
+      <label>Auto spacing
+        <select id="setAutospace"><option value="1">On</option><option value="0">Off</option></select></label>
+      <label>Symbol style
+        <select id="setSymbols"><option value=".−">. −</option><option value="·−">· −</option></select></label>
+      <label>Capitalization
+        <select id="setCaps"><option value="upper">UPPERCASE</option><option value="keep">Keep as typed</option></select></label>
+      <label>Letter spacing <output id="lsOut">1</output>
+        <input type="range" id="setLetterSpace" min="0" max="6" step="1" value="1"></label>
+      <label>Word spacing <output id="wsOut">3</output>
+        <input type="range" id="setWordSpace" min="1" max="8" step="1" value="3"></label>
+    </div>
+
+    <h3 class="set-group">Audio</h3>
+    <div class="settings-grid">
+      <label>Default WPM <output id="setWpmOut">15</output>
+        <input type="range" id="setWpm" min="5" max="40" value="15"></label>
+      <label>Default tone <output id="setToneOut">600 Hz</output>
+        <input type="range" id="setTone" min="300" max="1200" step="10" value="600"></label>
+      <label>Default volume <output id="setVolOut">70%</output>
+        <input type="range" id="setVol" min="0" max="100" value="70"></label>
+    </div>
+
+    <h3 class="set-group">Accessibility &amp; device</h3>
+    <div class="settings-grid">
+      <label>Keyboard shortcuts
+        <select id="setShortcuts"><option value="1">On</option><option value="0">Off</option></select></label>
+      <label>High contrast
+        <select id="setHc"><option value="0">Off</option><option value="1">On</option></select></label>
+      <label class="toggle"><input type="checkbox" id="setVibration"><span>Vibration available</span></label>
+      <label class="toggle"><input type="checkbox" id="setFlashing"><span>Flashing available</span></label>
+    </div>
+
+    <div class="modal-foot">
+      <button id="resetStats" class="ghost-btn">Reset progress</button>
+      <button id="settingsDone" class="big-btn">DONE</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<div class="flash-stage" id="flashStage" hidden><span id="flashGlyph"></span></div>
+
+<script src="data.js"></script>
+<script src="audio.js"></script>
+<script src="app.js"></script>
+<script src="learn.js"></script>
+<script src="practice.js"></script>
+<script src="tools.js"></script>
+<script src="badges.js"></script>
+<script src="radio.js"></script>
+<script src="puzzles.js"></script>
+<script src="secret.js"></script>
+</body>
+</html>
